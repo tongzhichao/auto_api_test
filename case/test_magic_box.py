@@ -9,10 +9,9 @@
 @time: 17-4-13 下午2:57
 """
 
-import requests
-import json
 import unittest
 from lib.file_opreate import ConfigOperate
+from lib.http_requests import HttpRequests
 from config.get_base_parms import *
 
 
@@ -21,37 +20,46 @@ class TestMagicBox(unittest.TestCase):
 
     def setUp(self):
 
-        self.url = ConfigOperate('/home/liuyu/project/autoapitest/config/global.ini').get_config('httpconf', 'baseurl')
+        self.url = ConfigOperate('/home/liuyu/auto_api_test/config/global.ini').get_config('httpconf', 'game_baseurl')
         self.base_parms = get_base_parms()
         self.headers = {'content-type': 'application/json'}
 
     def test_update_info(self):
         '''获取升级信息'''
 
-        response = requests.post(self.url+'/api/get/latest-version-info', data=json.dumps(self.base_parms))
-        self.result = response.json()
-        self.assertEqual(response.status_code, 200)
+        rp = HttpRequests.do_post(self.url + '/api/get/latest-version-info', self.base_parms)
+        if rp[0] is True:
+            result = rp[1].json()
+            print(result)
+            self.assertEqual(result['rc'], 0)
+        else:
+            self.fail('接口请求出错,HTTP响应为%d' % rp[1])
 
     def test_plugin_version_info(self):
         ''' 获取视频插件升级信息 '''
 
-        response = requests.post(self.url+'/api/get/plugin-version-info', data=json.dumps(self.base_parms), headers=self.headers)
-        self.result = response.json()
-        self.assertEqual(response.status_code, 200)
+        rp = HttpRequests.do_post(self.url + '/api/get/plugin-version-info', self.base_parms)
+        if rp[0] is True:
+            result = rp[1].json()
+            print(result)
+            self.assertEqual(result['rc'], 0)
+        else:
+            self.fail('接口请求出错,HTTP响应为%d' % rp[1])
 
     def test_recommond_game(self):
         '''获取下载页面推荐的游戏'''
-
-        response = requests.post(self.url+'/api/get/recommend-games', data=json.dumps(self.base_parms))
-        self.result = response.json()
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.result['msg'], '成功')
-        self.assertEqual(self.result['data']['showCount'], 6)
+        rp = HttpRequests.do_post(self.url + '/api/get/recommend-games', self.base_parms)
+        if rp[0] is True:
+            result = rp[1].json()
+            print(result)
+            self.assertEqual(result['rc'], 0)
+            self.assertEqual(result['data']['showCount'], 6)
+        else:
+            self.fail('接口请求出错,HTTP响应为%d' % rp[1])
 
     def test_get_box_game(self):
         '''获取魔盒游戏详细信息'''
-
-        apks = [
+        list_apks = [
                     {
                         "pkgName": "com.invictus.impossiball",
                         "verCode": "1511300729",
@@ -59,77 +67,111 @@ class TestMagicBox(unittest.TestCase):
                         "signatureMf": "0f140a2381575ff2222e47e817a09b53",
                     }
             ]
-        base_parms = get_base_parms()
-        base_parms.update({'apks': apks})
-        response = requests.post(self.url + '/api/get/box-games', data=json.dumps(base_parms))
-        if response.status_code == 200:
-            self.result = response.json()
+        rp = HttpRequests.do_post(self.url + '/api/get/box-games', self.base_parms, apks=list_apks)
+        if rp[0] is True:
+            result = rp[1].json()
+            print(result)
+            self.assertEqual(result['rc'], 0)
         else:
-            self.result = '无返回数据,HTTP状态码为%d' % response.status_code
-        # msg = json.loads(response.text.encode('utf-8'))['msg']
-        self.assertEqual(response.status_code, 200)
-        # self.assertEqual(msg, 'ok')
-
+            self.fail('接口请求出错,HTTP响应为%d' % rp[1])
+    #
     # def test_get_upgrade_game(self):
-
-        # pass
+    #
+    #     pass
 
     def test_get_default_keyword(self):
         '''获取搜索框默认关键词'''
-        response = requests.post(self.url + '/api/get/default-keywords', data=json.dumps(get_base_parms()))
-        self.result = response.json()
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.result['rc'], 0)
+        rp = HttpRequests.do_post(self.url + '/api/get/default-keywords', self.base_parms)
+        if rp[0] is True:
+            result = rp[1].json()
+            print(result)
+            self.assertEqual(result['rc'], 0)
+        else:
+            self.fail('接口请求出错,HTTP响应为%d' % rp[1])
 
     def test_hot_games(self):
         '''获取搜索页推荐的游戏列表'''
-        response = requests.post(self.url + '/api/get/hot-games', data=json.dumps(get_base_parms()))
-        self.result = response.json()
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.result['rc'], 0)
+        rp = HttpRequests.do_post(self.url + '/api/get/hot-games', self.base_parms)
+        if rp[0] is True:
+            result = rp[1].json()
+            print(result)
+            self.assertEqual(result['rc'], 0)
+        else:
+            self.fail('接口请求出错,HTTP响应为%d' % rp[1])
 
     def test_get_ad_config(self):
         '''测试获取广告位信息'''
-        response = requests.post(self.url + '/api/get/ad-config', data=json.dumps(get_base_parms()))
-        self.result = response.json()
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.result['rc'], 0)
+        rp = HttpRequests.do_post(self.url + '/api/get/ad-config', self.base_parms)
+        if rp[0] is True:
+            result = rp[1].json()
+            print(result)
+            self.assertEqual(result['rc'], 0)
+        else:
+            self.fail('接口请求出错,HTTP响应为%d' % rp[1])
 
     def test_game_view_page(self):
         '''游戏详情页测试'''
-        base_params = get_base_parms()
-        base_params.update({'id': 2000, 'pa': str(get_random_gameid()[0])})
-        response = requests.post(self.url + '/view/page', data=json.dumps(base_params))
-        self.result = response.json()
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.result['rc'], 0)
+        rp = HttpRequests.do_post(self.url + '/view/page', self.base_parms, id=2000, pa=str(get_random_gameid()[0]))
+        if rp[0] is True:
+            result = rp[1].json()
+            print(result)
+            self.assertEqual(result['rc'], 0)
+        else:
+            self.fail('接口请求出错,HTTP响应为%d' % rp[1])
 
     def test_duplicate_game(self):
         '''获取开小号游戏列表'''
-        base_params = get_base_parms()
         ext_params = [{"pkgName": "com.dreamsky.DiabloLOL", "verCode": 310}, {"pkgName": "com.sqage.Ogre.OgreInstance.uc", "verCode": 24}, {"pkgName": "com.windplay.mobius.dnv.uc", "verCode": 7}]
-        base_params.update({'apks': ext_params})
-        response = requests.post(self.url + '/api/get/duplicate-game-list', data=json.dumps(base_params))
-        if response.status_code == 200:
-            self.result = response.json()
-            self.assertEqual(self.result['rc'], 0)
+        rp = HttpRequests.do_post(self.url + '/api/get/duplicate-game-list', self.base_parms, apks=ext_params)
+        if rp[0] is True:
+            result = rp[1].json()
+            print(result)
+            self.assertEqual(result['rc'], 0)
         else:
-            self.result = '接口请求发生错误,HTTP状态码为%d' % response.status_code
-        self.assertEqual(response.status_code, 200, '请求成功')
+            self.fail('接口请求出错,HTTP响应为%d' % rp[1])
 
     def test_get_game_list(self):
         '''获取魔盒游戏最热列表'''
-        base_parms = get_base_parms()
-        base_parms.update({'gameType': 'boxGame', 'orderType': 'hottest'})
-        response = requests.post(self.url + '/api/get/game-list', data=json.dumps(base_parms))
-        self.result = response.json()
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.result['rc'], 0)
+        rp = HttpRequests.do_post(self.url + '/api/get/game-list', self.base_parms, gameType='boxGame',orderType='hottest' )
+        if rp[0] is True:
+            result = rp[1].json()
+            print(result)
+            self.assertEqual(result['rc'], 0)
+        else:
+            self.fail('接口请求出错,HTTP响应为%d' % rp[1])
 
-    # def test_get_page
+    def test_get_float(self):
+        '''获取悬浮窗数据'''
+        rp = HttpRequests.do_post(self.url + '/api/get/float', self.base_parms)
+        if rp[0] is True:
+            result = rp[1].json()
+            print(result)
+            self.assertEqual(result['rc'], 0)
+        else:
+            self.fail('接口请求出错,HTTP响应为%d' % rp[1])
+
+    def test_get_red_point(self):
+        '''测试小红点显示及数量'''
+        rp = HttpRequests.do_post(self.url + '/api/get/page_id_status', self.base_parms)
+        if rp[0] is True:
+            result = rp[1].json()
+            print(result)
+            self.assertEqual(result['rc'], 0)
+        else:
+            self.fail('接口请求出错,HTTP响应为%d' % rp[1])
+
+    def test_game_play_time(self):
+        '''获取魔盒游戏时长'''
+        rp = HttpRequests.do_post(self.url + '/api/get/game_play_info', self.base_parms, gameId=get_random_gameid())
+        if rp[0] is True:
+            result = rp[1].json()
+            print(result)
+            self.assertEqual(result['rc'], 0)
+        else:
+            self.fail('接口请求出错,HTTP响应为%d' % rp[1])
 
     def tearDown(self):
-        print(self.result)
+        pass
 
 if __name__ == '__main__':
     unittest.main()

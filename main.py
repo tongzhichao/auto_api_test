@@ -10,7 +10,7 @@
 """
 
 # 基础包：接口测试的封装
-import unittest,time
+import unittest, time
 from lib.HTMLTestRunner import HTMLTestRunner
 from lib.sendmail import SendEmail
 
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     runner.run(discover)
     fp.close()
     to_list = ['liuyu@yyhudong.com']
-    cc_list = ['liuyu@yyhudong.com']
+    cc_list = ['testing@yyhudong.com']
     file_path_tuple = (report_file_name,)
     send_conf = SendEmail('smtp.163.com', '18724353405@163.com', 'qq123123')
     # send_conf = SendEmail('mail.yyhudong.com', 'liuyu@yyhhudong.com', 'qq123..')

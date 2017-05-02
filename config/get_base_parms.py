@@ -96,7 +96,6 @@ def create_req_time():
     # return reqtime
     pass
 
-
 def get_ver_code():
     db = ConnMysql()
     sql = "select max(vercode) from ggserver.iplay_products where name = '游戏助手'"
@@ -141,10 +140,22 @@ def get_random_uid():
     result = db.fetch_all_rows()
     return random.choice(result)[0]
 
-def test_re():
-    import re
-    re.compile()
-    
+def get_random_topic():
+    db = ConnMysql()
+    sql = "select tid from forum_dev.topic where typeid=0 order by lastpost limit 100"
+    # sql = "select max(vercode) from iplay_products limit 10"
+    db.do_select(sql)
+    result = db.fetch_all_rows()
+    return random.choice(result)[0]
+
+ def get_random_plugin_topic():
+    db = ConnMysql()
+    sql = "select tid from forum_dev.topic where typeid=1 order by lastpost limit 100"
+    # sql = "select max(vercode) from iplay_products limit 10"
+    db.do_select(sql)
+    result = db.fetch_all_rows()
+    return random.choice(result)[0]
+
 
 
 

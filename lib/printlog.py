@@ -15,7 +15,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)  # Log等级总开关
 
 # 第二步，创建一个handler，用于写入日志文件
-logfile = '/home/liuyu/project/autoapitest/log/log.txt'
+logfile = '/home/liuyu/auto_api_test/log/log.txt'
 fh = logging.FileHandler(logfile, mode='a+')
 fh.setLevel(logging.INFO)  # 输出到file的log等级的开关
 

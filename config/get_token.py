@@ -13,7 +13,6 @@ import requests
 
 def get_token():
 
-    url = 'https://bbs.ggzhushou.cn:444/login'
     data = {
         "username": "yyhdggtest000",
         "password": "9628FFAECF05013841852CB572D50D45",

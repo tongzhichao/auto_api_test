@@ -8,18 +8,17 @@
 @file: test_login.py.py
 @time: 17-4-6 上午1:42
 """
-import requests
-import json
 import unittest
 from lib.file_opreate import ConfigOperate
-
+from lib.http_requests import HttpRequests
+from lib.printlog import PrintLog
 
 class TestLogin(unittest.TestCase):
     '''登录模块测试'''
 
     def setUp(self):
 
-        self.url = ConfigOperate('/home/liuyu/project/autoapitest/config/global.ini').get_config('httpconf', 'baseurl')
+        self.url = ConfigOperate('/home/liuyu/auto_api_test/config/global.ini').get_config('httpconf', 'forum_baseurl')
         self.data = {
             "username": "yyhdggtest000",
             "password": "9628FFAECF05013841852CB572D50D45",
@@ -98,12 +97,19 @@ class TestLogin(unittest.TestCase):
 
     def test_login(self):
         ''' 测试登录 '''
-        response = requests.post(self.url, data=json.dumps(self.data))
-        self.result = response.json()
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.result['msg'], '成功')
+        rp = HttpRequests.do_post(self.url+'/login', self.data)
+        if rp[0] is True:
+            result = rp[1].json()
+            print(result)
+            PrintLog.print_log_info('登录接口测试通过' + '\n' + str(result))
+            self.assertEqual(result['rc'], 0)
+        else:
+            self.fail('接口请求出错,HTTP响应为%d' % rp[1])
 
     def tearDown(self):
-        print(self.result)
+        pass
+
+if __name__ == '__main__':
+    unittest.main()
 
 
