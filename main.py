@@ -25,11 +25,10 @@ if __name__ == '__main__':
     runner = HTMLTestRunner(stream=fp, title='接口自动化测试报告', description='用例执行情况如下')
     runner.run(discover)
     fp.close()
-    to_list = ['liuyu@yyhudong.com']
-    cc_list = ['testing@yyhudong.com']
+    to_list = []
+    cc_list = []
     file_path_tuple = (report_file_name,)
-    send_conf = SendEmail('smtp.163.com', '18724353405@163.com', 'qq123123')
-    # send_conf = SendEmail('mail.yyhudong.com', 'liuyu@yyhhudong.com', 'qq123..')
+    send_conf = SendEmail('smtp.163.com', '', '')
     if send_conf.send_email(to_list, cc_list, sub='接口测试报告' + now, content=open(report_file_name, 'rb').read(), file_path=file_path_tuple):
         print('发送成功')
     else:
